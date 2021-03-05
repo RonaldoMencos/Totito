@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows.Forms;
 
 namespace Totito
@@ -20,6 +14,23 @@ namespace Totito
             InitializeComponent();
         }
 
+        private void inicializarTablero()
+        {
+            button1.Text = "";
+            button2.Text = "";
+            button3.Text = "";
+            button4.Text = "";
+            button5.Text = "";
+            button6.Text = "";
+            button7.Text = "";
+            button8.Text = "";
+            button9.Text = "";
+            jugador = "";
+            inicioJugador = false;
+            button10.Enabled = true;
+            button11.Enabled = true;
+            Console.WriteLine(jugador);
+        }
         private void button10_Click(object sender, EventArgs e)
         {
             if (!inicioJugador)
@@ -37,6 +48,7 @@ namespace Totito
             {
                 return;
             }
+            Console.WriteLine(jugador);
 
             if (button5.Text == "")
             {
@@ -63,13 +75,7 @@ namespace Totito
                     }
                 }
 
-                if (jugador == "X")
-                {
-                    jugador = "O";
-                } else
-                {
-                    jugador = "X";
-                }
+                jugador = cambiarJugador(jugador);
             }                       
         }
 
@@ -101,14 +107,7 @@ namespace Totito
                     }
                 }
 
-                if (jugador == "X")
-                {
-                    jugador = "O";
-                }
-                else
-                {
-                    jugador = "X";
-                }
+                jugador = cambiarJugador(jugador);
             }           
         }
 
@@ -141,14 +140,7 @@ namespace Totito
                     }
                 }
 
-                if (jugador == "X")
-                {
-                    jugador = "O";
-                }
-                else
-                {
-                    jugador = "X";
-                }
+                jugador = cambiarJugador(jugador);
             }            
         }
 
@@ -164,14 +156,7 @@ namespace Totito
                 button2.Text = jugador;
                 this.tiro++;
 
-                if (jugador == "X")
-                {
-                    jugador = "O";
-                }
-                else
-                {
-                    jugador = "X";
-                }
+                jugador = cambiarJugador(jugador);
             }
 
             if (tiro >= 5)
@@ -198,7 +183,6 @@ namespace Totito
             {
                 button3.Text = jugador;
                 this.tiro++;
-
                 if (tiro >= 5)
                 {
                     if ((button3.Text == button2.Text) && (button3.Text == button1.Text))
@@ -215,14 +199,7 @@ namespace Totito
                     }
                 }
 
-                if (jugador == "X")
-                {
-                    jugador = "O";
-                }
-                else
-                {
-                    jugador = "X";
-                }
+                jugador = cambiarJugador(jugador);
             }          
         }
 
@@ -250,14 +227,7 @@ namespace Totito
                     }
                 }
 
-                if (jugador == "X")
-                {
-                    jugador = "O";
-                }
-                else
-                {
-                    jugador = "X";
-                }
+                jugador = cambiarJugador(jugador);
             }           
         }
 
@@ -279,20 +249,13 @@ namespace Totito
                     {
                         nuevoDialog("El ganador es el jugador " + button6.Text);
                     }
-                    else if ((button6.Text == button5.Text) && (button4.Text == button4.Text))
+                    else if ((button6.Text == button5.Text) && (button6.Text == button4.Text))
                     {
-                        nuevoDialog("El ganador es el jugador " + button6.Text);
+                        nuevoDialog("El ganador es el jugador 44" + button6.Text);
                     }
                 }
 
-                if (jugador == "X")
-                {
-                    jugador = "O";
-                }
-                else
-                {
-                    jugador = "X";
-                }
+                jugador = cambiarJugador(jugador);
             }            
         }
 
@@ -324,14 +287,7 @@ namespace Totito
                     }
                 }
 
-                if (jugador == "X")
-                {
-                    jugador = "O";
-                }
-                else
-                {
-                    jugador = "X";
-                }
+                jugador = cambiarJugador(jugador);
             }           
         }
 
@@ -359,14 +315,7 @@ namespace Totito
                     }
                 }
 
-                if (jugador == "X")
-                {
-                    jugador = "O";
-                }
-                else
-                {
-                    jugador = "X";
-                }
+                jugador = cambiarJugador(jugador);
             }           
         }
 
@@ -381,17 +330,97 @@ namespace Totito
             }
         }
 
+        private String cambiarJugador(String jugador)
+        {
+            if (jugador == "X")
+            {
+                jugador = "O";
+            }
+            else
+            {
+                jugador = "X";
+            }
+
+            return jugador;
+        }
+
         public DialogResult nuevoDialog (String mensaje)
         {
             DialogResult dr = MessageBox.Show(mensaje+ "\n Desea jugar de nuevo?", "Información", MessageBoxButtons.YesNo,MessageBoxIcon.Information);
             if (dr == DialogResult.Yes)
             {
-                Application.Restart();
+                inicializarTablero();
             } else if (dr == DialogResult.No)
             {
                 Application.Exit();
             }
             return dr;
         }
+
+        private void guardarToolStripButton_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            String texto;
+
+            saveFileDialog1.Filter = "txt files (*.txt)|*.txt";
+            saveFileDialog1.FilterIndex = 2;
+            saveFileDialog1.RestoreDirectory = true;
+
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                    using (StreamWriter file = new StreamWriter(Path.GetFullPath(saveFileDialog1.FileName), true))
+                    {
+                        texto = button1.Text + '|' + button2.Text + '|' + button3.Text + '|'
+                        + button4.Text + '|' + button5.Text + '|' + button6.Text + '|' + button7.Text + '|'
+                        + button8.Text + '|' + button9.Text + '|' + tiro + '|' + jugador;
+
+                        file.WriteLine(texto);
+                        file.Close();
+                        inicializarTablero();
+
+                }
+
+            }
+        }
+
+        private void abrirToolStripButton_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                String filePath;
+                String fileContent;
+                openFileDialog.InitialDirectory = "c:\\";
+                openFileDialog.Filter = "txt files (*.txt)|*.txt";
+                openFileDialog.FilterIndex = 2;
+                openFileDialog.RestoreDirectory = true;
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    filePath = openFileDialog.FileName;
+
+                    var fileStream = openFileDialog.OpenFile();
+
+                    using (StreamReader reader = new StreamReader(fileStream))
+                    {
+                        fileContent = reader.ReadToEnd();
+                        char delimitador = '|';
+                        String[] valores = fileContent.Split(delimitador);
+                        button1.Text = valores[0];
+                        button2.Text = valores[1];
+                        button3.Text = valores[2];
+                        button4.Text = valores[3];
+                        button5.Text = valores[4];
+                        button6.Text = valores[5];
+                        button7.Text = valores[6];
+                        button8.Text = valores[7];
+                        button9.Text = valores[8];
+                        tiro = int.Parse(valores[9]);
+                        jugador = valores[10];
+                        button10.Enabled = false;
+                        button11.Enabled = false; 
+                    }
+                }
+            }
+        }        
     }
 }
